@@ -80,11 +80,12 @@ function love.load()
     -- set up our sound effects; later, we can just index this table and
     -- call each entry's `play` method
     sounds = {
-        ['paddle_hit'] = love.audio.newSource('sounds/paddle_hit.wav'),
-        ['score'] = love.audio.newSource('sounds/score.wav'),
-        ['wall_hit'] = love.audio.newSource('sounds/wall_hit.wav')
+        ['paddle_hit'] = love.audio.newSource('paddle_hit.wav', 'static'),
+        ['score'] = love.audio.newSource('score.wav', 'static'),
+        ['wall_hit'] = love.audio.newSource('wall_hit.wav', 'static')
     }
-
+    
+    
     -- initialize our player paddles; make them global so that they can be
     -- detected by other functions and modules
     player1 = Paddle(10, 30, 5, 20)
@@ -275,11 +276,19 @@ function love.update(dt)
         player1.dy = 0
     end
 
-    -- player 2
-    if love.keyboard.isDown('up') then
-        player2.dy = -PADDLE_SPEED
-    elseif love.keyboard.isDown('down') then
-        player2.dy = PADDLE_SPEED
+    -- player 2 -- REPLACE PLAYER 2 WITH AI
+    -- Move up if ball y-axis is greater than paddle y-axis, otherwise move down
+    -- if love.keyboard.isDown('up') then
+    --     player2.dy = -PADDLE_SPEED
+    -- elseif love.keyboard.isDown('down') then
+    --     player2.dy = PADDLE_SPEED
+    -- else
+    --     player2.dy = 0
+    -- end
+    if ball.y < player2.y then
+        player2.dy = -PADDLE_SPEED/2
+    elseif ball.y > player2.y then
+        player2.dy = PADDLE_SPEED/2
     else
         player2.dy = 0
     end
@@ -332,7 +341,7 @@ function love.draw()
     -- begin drawing with push, in our virtual resolution
     push:apply('start')
 
-    love.graphics.clear(40, 45, 52, 255)
+    love.graphics.clear(40/255, 45/255, 52/255, 255/255)
     
     -- render different things depending on which part of the game we're in
     if gameState == 'start' then
